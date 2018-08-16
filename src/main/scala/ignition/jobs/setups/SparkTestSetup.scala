@@ -1,18 +1,22 @@
 package ignition.jobs.setups
 
 
-import ignition.jobs.WordCountJob
+import ignition.jobs.SparkTestJob
 
 import ignition.core.jobs.CoreJobRunner.RunnerContext
 import ignition.core.jobs.utils.SparkContextUtils._
-// filterAndGetParallelTextFiles requires a date extractor:
 import ignition.core.jobs.utils.SimplePathDateExtractor.default
 
+import org.apache.spark.sql.DataFrame 
 
-// Count words and give the top 1000 highest-frequency
 object SparkTestSetup {
 
+  def calcHistogram(df: DataFrame) {
+    println("SparkTestSetup.calcHistogram()")
+  }
+
   def run(runnerContext: RunnerContext) {
+    println("SparkTestSetup.run()")
     val workDirectory = new java.io.File(".").getCanonicalPath 
     val sc = runnerContext.sparkContext
     val sparkConfig = runnerContext.config
@@ -30,6 +34,10 @@ object SparkTestSetup {
     // This setup is specific because it binds a certain source of files (gutenberg books)
     // to a certain output (top 1000 words printed in console)
     // val wordCount: RDD[(String, Int)] = WordCountJob.wc(lines)
+
+    val dfTransform : DataFrame = SparkTestJob.transform(df)
+
+    calcHistogram(dfTransform)
 
     // val top1000Words: Seq[(Int, String)] = wordCount
       // .map { case (word, count) => (count, word) }
