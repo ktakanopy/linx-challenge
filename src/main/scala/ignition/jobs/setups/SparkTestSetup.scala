@@ -24,10 +24,7 @@ object SparkTestSetup {
 
     println("Path = " + path)
 
-    val dataframe = sqlContext.read.json(path)
-
-    dataframe.show()
-    dataframe.printSchema()
+    val df = sqlContext.read.json(path)
 
     // The job is generic and can be used in other contexts
     // This setup is specific because it binds a certain source of files (gutenberg books)
