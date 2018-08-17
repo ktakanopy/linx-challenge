@@ -11,8 +11,6 @@ import ignition.core.jobs.utils.SimplePathDateExtractor.default
 
 import org.apache.spark.sql.DataFrame 
 
-import scala.util.parsing.json.JSON 
-
 object SparkTestSetup {
 
   val workDirectory = new java.io.File(".").getCanonicalPath 
@@ -23,46 +21,15 @@ object SparkTestSetup {
 
   def setupStateCityData() {
 
-    val cityPath = workDirectory + "/sample/state-city/cities.json"
-    val statePath = workDirectory + "/sample/state-city/states.json"
+    val cityPath = workDirectory + "/sample/state-city/state-city.json"
 
     val cityContent = scala.io.Source.fromFile(cityPath).mkString
-    val stateContent = scala.io.Source.fromFile(statePath).mkString
 
-    val statesList = JSON.parseFull(stateContent).get.asInstanceOf[List[Map[String,_]]]
-    val citiesList = JSON.parseFull(cityContent).get.asInstanceOf[List[Map[String,_]]]
+    val citiesList = Json.parse(cityContent).as[List[Map[String,String]]]
 
     val stateCitiesMap = scala.collection.mutable.Map[String, List[String]]()
 
-    val stateIdNameMap = scala.collection.mutable.Map[Int,String]() 
-
-    println("kljasdlkjaslkdjalskjd")
-    println(statesList)
-    println("kljasdlkjaslkdjalskjd")
-    println(statesList.getClass.toString())
-     // for(state <- statesList) {
-        // println((state.getClass.toString()))
-        // println(state)
-        // stateIdNameMap += (state.get("id") -> state.get("abbr"))
-    // }
-
-/*    for(city <- citiesList) { 
-        if(stateCitiesMap(city.state_id)) {
-            stateCitiesMap(city.state_id) :+ city.name
-        } else {
-            stateCitiesMap(city.state_id) = List()
-        }
-    }
-
-    for( (k,v) <- stateCitiesMap ) {
-        println("k  = " + k)
-
-        ls = v 
-        for(l <- ls) {
-            print(" " + l)
-        }
-    }
-*/  }
+  }
 
   def run(runnerContext: RunnerContext) {
     println("SparkTestSetup.run()")
