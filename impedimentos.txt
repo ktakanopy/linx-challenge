@@ -1,0 +1,4 @@
+- Spark com versão no projeto antiga. Tive problemas de implementação muita documentação está nas últimas versões, demoreir a perceber que a vesão do spark no iginition-core era a 1.5.1
+- Subprojeto igniton-core estava com ssh e não com https no iginition-template, demorei a perceber.
+- Como nào conheço muito scala tive problemas para manipular json. Eu deveria utilizar dois arquivos .jsons para criar um Map de state x cities, porém deus muitos bugs porque eu não conseguia validar o objeto json da forma correta. 
+Acabei criando o json tudo na mão de tanto tempo que perdi.
