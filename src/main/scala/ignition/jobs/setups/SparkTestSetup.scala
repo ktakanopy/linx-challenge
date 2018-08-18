@@ -2,8 +2,6 @@ package ignition.jobs.setups
 
 import org.apache.commons.lang3._
 
-import play.api.libs.json._
-
 import ignition.jobs.SparkTestJob
 
 import ignition.core.jobs.CoreJobRunner.RunnerContext
@@ -13,23 +11,20 @@ import ignition.core.jobs.utils.SimplePathDateExtractor.default
 import org.apache.spark.sql.DataFrame 
 import org.apache.spark.sql.SQLContext
 
+
 object SparkTestSetup {
 
   val workDirectory = new java.io.File(".").getCanonicalPath 
   
-  def calcHistogram(df: DataFrame) {
-    println("SparkTestSetup.calcHistogram()")
-  }
-
   def setupStateCityRegionData(sqlContext : SQLContext) : DataFrame = {
 
     val cityPath = workDirectory + "/sample/state-city/state-city.json"
 
     val cityDf = sqlContext.read.json(cityPath)
 
-    cityDf.show()
+    // cityDf.show()
 
-    cityDf.printSchema()
+    // cityDf.printSchema()
 
     cityDf
   }
@@ -44,21 +39,17 @@ object SparkTestSetup {
 
     val path = workDirectory + "/sample/customers/*.json"
 
-    println("Path = " + path)
+    // println("Path = " + path)
 
     val df = sqlContext.read.json(path)
 
-    df.printSchema()
+    // df.printSchema()
 
     val stateCityRegionDf = setupStateCityRegionData(sqlContext)
 
     val dfTransform : DataFrame = SparkTestJob.transform(df, stateCityRegionDf)
 
-    // val top1000Words: Seq[(Int, String)] = wordCount
-      // .map { case (word, count) => (count, word) }
-      // .top(1000)
+    SparkTestJob.calcHistogram(dfTransform)
 
-    // print top words
-    // top1000Words.zipWithIndex.foreach { case ((freq, word), i) => println(s"${i+1}) $freq - '$word'") }
   }
 }

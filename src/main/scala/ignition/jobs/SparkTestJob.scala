@@ -11,19 +11,29 @@ object SparkTestJob {
         dfTransformed
   }
 
+  def calcHistogram(df: DataFrame) {
+
+    var arrayValues = df.groupBy("age").count().sort("age").rdd.map(x => (x.get(0), x.get(1) ) ).collect()
+
+    print("*** Sorted Histogram values (age x count):\n [")
+    for( k <- arrayValues ) {
+      print(k + " ")
+    }
+    println("]")
+  }
+
   def addRegionState(df: DataFrame, stateCityRegionDf: DataFrame) : DataFrame = {
 
       var resultDf = df.join(stateCityRegionDf, df("addresses").getField("city")(0) === stateCityRegionDf("city") && df("addresses").getField("state")(0) === stateCityRegionDf("state") ).drop("city").drop("state")
       .select(df("cpf"), df("name") , df("email"), df("gender"), df("birthDate"), df("age") , df("maritalStatus"), df("phones")
-      // )
         , df("addresses.addressType"), df("addresses.city"), df("addresses.complement"), df("addresses.country")
         , stateCityRegionDf("region")
         , df("addresses.district"), df("addresses.city"), df("addresses.complement"), df("addresses.country")
         , df("addresses.number"), df("addresses.state"), df("addresses.street"), df("addresses.zipcode") 
       )
 
-      resultDf.printSchema()
-      resultDf.show(false)
+      // resultDf.printSchema()
+      // resultDf.show(false)
 
       // val res = resultDf.select("city")
 
@@ -41,7 +51,6 @@ object SparkTestJob {
         // df.select("addresses.city").show()
 
         // dfTransformed.show()
-
-        dfTransformed
+        dfRes
      }
 }

@@ -2,3 +2,4 @@
 - Subprojeto igniton-core estava com ssh e não com https no iginition-template, demorei a perceber.
 - Como nào conheço muito scala tive problemas para manipular json. Eu deveria utilizar dois arquivos .jsons para criar um Map de state x cities, porém deus muitos bugs porque eu não conseguia validar o objeto json da forma correta. 
 Acabei criando o json tudo na mão de tanto tempo que perdi.
+- Visto que no teste pede-se para adicionar os estados, achei que nos dados não continham os valores. Mas estão lá. Se soubessse disso me pouparia mais tempo..
