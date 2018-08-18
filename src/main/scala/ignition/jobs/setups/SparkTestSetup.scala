@@ -40,11 +40,34 @@ object SparkTestSetup {
 
     val dfTransform : DataFrame = SparkTestJob.transform(df, stateCityRegionDf)
 
-    println("Final DataFrame *** ")
+    println(" *** DataFrame transformed (added age, state and region) *** ")
 
     dfTransform.printSchema()
 
     dfTransform.show()
+
+    // Creating DataFrames to optimimze queries
+
+    println(" *** DataFrame district x customers cpf ")
+
+    val dfDistrictCPF  : DataFrame = SparkTestJob.createDistrictCPFDF(dfTransform);
+
+    dfDistrictCPF.printSchema()
+
+    dfDistrictCPF.show()
+
+    println(" *** Writing the dataframe as JSON in ./sample/target/district-cpf ")
+    dfDistrictCPF.write.json(workDirectory + "/sample/target/district-cpf")
+
+    println(" *** DataFrame state x customers cpf ")
+
+    val dfStateCPF  : DataFrame = SparkTestJob.createStateCPFDF(dfTransform);
+
+    dfStateCPF.printSchema()
+
+    dfStateCPF.show()
+    println(" *** Writing the dataframe as JSON in ./sample/target/state-cpf ")
+    dfStateCPF.write.json(workDirectory + "/sample/target/state-cpf")
 
     SparkTestJob.calcHistogram(dfTransform)
 

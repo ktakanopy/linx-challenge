@@ -1,1 +1,1 @@
-./sbt 'run SparkTestSetup'
+./sbt --error --warn 'run SparkTestSetup'
