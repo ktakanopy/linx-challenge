@@ -16,15 +16,12 @@ object SparkTestSetup {
 
   val workDirectory = new java.io.File(".").getCanonicalPath 
   
-  def setupStateCityRegionData(sqlContext : SQLContext) : DataFrame = {
+  def setupStateCityRegionData(sqlContext : SQLContext) : DataFrame = { // Need to add region and state
+    println("SparkTestSetup.setupStateCityRegionData()")
 
     val cityPath = workDirectory + "/sample/state-city/state-city.json"
 
     val cityDf = sqlContext.read.json(cityPath)
-
-    // cityDf.show()
-
-    // cityDf.printSchema()
 
     cityDf
   }
@@ -35,19 +32,19 @@ object SparkTestSetup {
     val sparkConfig = runnerContext.config
     val sqlContext = new SQLContext(sc)
 
-    // val lines: RDD[String] = sc.textFile(Seq("file:///home/ktakano/work/neemu/linx-challenge/sample/*.json"))
-
     val path = workDirectory + "/sample/customers/*.json"
 
-    // println("Path = " + path)
-
     val df = sqlContext.read.json(path)
-
-    // df.printSchema()
 
     val stateCityRegionDf = setupStateCityRegionData(sqlContext)
 
     val dfTransform : DataFrame = SparkTestJob.transform(df, stateCityRegionDf)
+
+    println("Final DataFrame *** ")
+
+    dfTransform.printSchema()
+
+    dfTransform.show()
 
     SparkTestJob.calcHistogram(dfTransform)
 
