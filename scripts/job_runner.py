@@ -29,7 +29,7 @@ import cluster
 
 ## Pseudo-types defnition
 
-ClusterConf = collections.namedtuple('ClusterConf', ['instance_type', 'spot_price', 'slaves', 'worker_instances', 'job_mem', 'ami_type'])
+ClusterConf = collections.namedtuple('ClusterConf', ['instance_type', 'spot_price', 'subordinates', 'worker_instances', 'job_mem', 'ami_type'])
 RegionConf = collections.namedtuple('RegionConf', ['region', 'ami_pvm', 'ami_hvm', 'az_suffixes', 'vpc', 'subnet_by_az'])
 FullConf = collections.namedtuple('FullConf', ['cluster_conf', 'region_conf', 'az'])
 
@@ -65,8 +65,8 @@ regions_conf = collections.OrderedDict([
     # This may be undesirable due to data transfer costs. Add other regions with caution
 ])
 
-master_ami_type = 'pvm'
-master_instance_type = 'm3.2xlarge'
+main_ami_type = 'pvm'
+main_instance_type = 'm3.2xlarge'
 
 runner_eid = "runner-{0}".format(uuid.uuid4())
 victorops_url = "https://alert.victorops.com/integrations/generic/20131114/alert/<you_key>/<your_tag>"
@@ -304,8 +304,8 @@ def get_ami_for(full_conf):
     else:
         return full_conf.region_conf.ami_pvm
 
-def get_master_ami(full_conf):
-    if master_ami_type == 'hvm':
+def get_main_ami(full_conf):
+    if main_ami_type == 'hvm':
         return full_conf.region_conf.ami_hvm
     else:
         return full_conf.region_conf.ami_pvm
@@ -319,13 +319,13 @@ def ensure_cluster(cluster_name, cluster_sequence, full_conf, blacklisted_confs,
                 destroy_all_clusters(cluster_name)
                 full_conf = get_best_conf_and_az(blacklisted_confs, cluster_sequence, entity_id=entity_id)
                 log.info('Trying to launch cluster with configuration {}'.format(full_conf))
-                cluster_launch(cluster_name=cluster_name, slaves=str(full_conf.cluster_conf.slaves),
-                               master_instance_type=master_instance_type,
+                cluster_launch(cluster_name=cluster_name, subordinates=str(full_conf.cluster_conf.subordinates),
+                               main_instance_type=main_instance_type,
                                instance_type=full_conf.cluster_conf.instance_type,
                                ondemand=full_conf.cluster_conf.spot_price is None,
                                spot_price=str(full_conf.cluster_conf.spot_price),
                                ami=get_ami_for(full_conf),
-                               master_ami=get_master_ami(full_conf),
+                               main_ami=get_main_ami(full_conf),
                                worker_instances=str(full_conf.cluster_conf.worker_instances),
                                zone=full_conf.az,
                                vpc = full_conf.region_conf.vpc if not disable_vpc else None,
